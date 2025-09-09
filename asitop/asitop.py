@@ -1,3 +1,4 @@
+import atexit
 import time
 import argparse
 from collections import deque
@@ -16,10 +17,20 @@ parser.add_argument('--show_cores', type=bool, default=False,
                     help='Choose show cores mode')
 parser.add_argument('--max_count', type=int, default=0,
                     help='Max show count to restart powermetrics')
+parser.add_argument('--output_file', type=str, default="/dev/null",
+                    help='The CSV file to save the results to')
 args = parser.parse_args()
 
 
 def main():
+    outf = open(args.output_file, "a", encoding="utf-8")
+    atexit.register(outf.close)
+
+    def log_row(values):
+        line = ",".join(str(v) for v in values) + "\n"
+        outf.write(line)
+        outf.flush()   # make sure it hits disk immediately
+
     print("\nASITOP - Performance monitoring CLI tool for Apple Silicon")
     print("You can update ASITOP by running `pip install asitop --upgrade`")
     print("Get help at `https://github.com/tlkh/asitop`")
@@ -398,6 +409,8 @@ def main():
                         "W)"
                     ])
                     gpu_power_chart.append(gpu_power_percent)
+
+                    log_row(['{0:.2f}'.format(cpu_power_W), '{0:.2f}'.format(gpu_power_W), '{0:.2f}'.format(package_power_W)])
 
                     ui.display()
 
