@@ -156,7 +156,7 @@ def main():
     timecode = str(int(time.time()))
 
     powermetrics_process = run_powermetrics_process(timecode,
-                                                    interval=args.interval * 1000)
+                                                    interval=50)
 
     print("\n[3/3] Waiting for first reading...\n")
 
@@ -410,7 +410,7 @@ def main():
                     ])
                     gpu_power_chart.append(gpu_power_percent)
 
-                    log_row(['{0:.2f}'.format(cpu_power_W), '{0:.2f}'.format(gpu_power_W), '{0:.2f}'.format(package_power_W)])
+                    log_row([str(timestamp), '{0:.2f}'.format(cpu_power_W), '{0:.2f}'.format(gpu_power_W), '{0:.2f}'.format(package_power_W)])
 
                     ui.display()
 
